@@ -4,6 +4,11 @@ import CategoryList from "./CategoryList";
 import ProductList from "./ProductList";
 import { Container, Row, Col } from "reactstrap";
 function App() {
+  let productInfo = { title: "Product List" };
+  let categoryInfo = { title: "Category List" };
+  // let titleProduct = "Product List";
+  // let titleCategory = "Category List"; title={titleCategory} şeklinde yazılır
+  // ister tanımlayarak ister direkt "title=Category List" yazarak okunur hale getirebiliriz.
   return (
     <div>
       <Container>
@@ -12,10 +17,10 @@ function App() {
         </Row>
         <Row>
           <Col xs="3">
-            <CategoryList></CategoryList>
+            <CategoryList info={categoryInfo}></CategoryList>
           </Col>
           <Col xs="9">
-            <ProductList></ProductList>
+            <ProductList info={productInfo}></ProductList>
           </Col>
         </Row>
       </Container>
