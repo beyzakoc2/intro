@@ -3,9 +3,13 @@ import Navi from "./Navi";
 import CategoryList from "./CategoryList";
 import ProductList from "./ProductList";
 import { Container, Row, Col } from "reactstrap";
+import alertify from "alertifyjs";
+import NotFound from "./NotFound";
+import CartList from "./CartList";
+import { Route, Routes } from "react-router-dom";
 
 export default class App extends Component {
-  state = { currentCategory: "", products: [] };
+  state = { currentCategory: "", products: [], cart: [] };
 
   componentDidMount() {
     this.getProducts();
@@ -28,15 +32,31 @@ export default class App extends Component {
       .then((data) => this.setState({ products: data }));
   };
 
+  addToCart = (product) => {
+    let newCart = this.state.cart;
+    var addedItem = newCart.find((c) => c.product.id === product.id);
+    if (addedItem) {
+      addedItem.quantity += 1;
+    } else {
+      newCart.push({ product: product, quantity: 1 });
+    }
+    // newCart.push({ product: product, quantity: 1 });
+    this.setState({ cart: newCart });
+    alertify.success(product.productName + "added to cart!", 2);
+  };
+
+  removeFromCart = (product) => {
+    let newCart = this.state.cart.filter((c) => c.product.id !== product.id);
+    this.setState({ cart: newCart });
+  };
+
   render() {
     let productInfo = { title: "Product List" };
     let categoryInfo = { title: "Category List" };
     return (
       <div>
         <Container>
-          <Row>
-            <Navi></Navi>
-          </Row>
+          <Navi removeFromCart={this.removeFromCart} cart={this.state.cart} />
           <Row>
             <Col xs="3">
               <CategoryList
@@ -46,8 +66,14 @@ export default class App extends Component {
               ></CategoryList>
             </Col>
             <Col xs="9">
+              <Routes>
+                <Route exact path="/" component={NotFound}></Route>
+                <Route exact path="/cart" component={CartList}></Route>
+              </Routes>
+
               <ProductList
                 products={this.state.products}
+                addToCart={this.addToCart}
                 currentCategory={this.state.currentCategory}
                 info={productInfo}
               ></ProductList>
