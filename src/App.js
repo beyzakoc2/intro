@@ -4,9 +4,10 @@ import CategoryList from "./CategoryList";
 import ProductList from "./ProductList";
 import { Container, Row, Col } from "reactstrap";
 import alertify from "alertifyjs";
+import { Route, Routes } from "react-router-dom";
 import NotFound from "./NotFound";
 import CartList from "./CartList";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import FormDemo1 from "./FormDemo1";
 
 export default class App extends Component {
   state = { currentCategory: "", products: [], cart: [] };
@@ -48,6 +49,7 @@ export default class App extends Component {
   removeFromCart = (product) => {
     let newCart = this.state.cart.filter((c) => c.product.id !== product.id);
     this.setState({ cart: newCart });
+    alertify.error(product.productName + "removed from cart!!", 2);
   };
 
   render() {
@@ -66,23 +68,30 @@ export default class App extends Component {
               ></CategoryList>
             </Col>
             <Col xs="9">
-              <BrowserRouter>
-                <Routes>
-                  <Route
-                    path="/"
-                    element={
-                      <ProductList
-                        products={this.state.products}
-                        addToCart={this.addToCart}
-                        currentCategory={this.state.currentCategory}
-                        info={productInfo}
-                      />
-                    }
-                  ></Route>
-                  <Route path="/cart" Component={CartList}></Route>
-                  <Route path="*" Component={NotFound}></Route>
-                </Routes>
-              </BrowserRouter>
+              <Routes>
+                <Route
+                  path="/cart"
+                  element={
+                    <CartList
+                      cart={this.state.cart}
+                      removeFromCart={this.removeFromCart}
+                    />
+                  }
+                />
+                <Route
+                  path="/"
+                  element={
+                    <ProductList
+                      products={this.state.products}
+                      addToCart={this.addToCart}
+                      currentCategory={this.state.currentCategory}
+                      info={productInfo}
+                    />
+                  }
+                />
+                <Route path="/form1" element={<FormDemo1 />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
             </Col>
           </Row>
         </Container>
